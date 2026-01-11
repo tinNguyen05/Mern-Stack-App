@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: food-recipe-db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=food-recipe-app
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - food-recipe-network
+
+  # Backend Service
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: food-recipe-backend
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - CONNECTION_STRING=mongodb://mongodb:27017/food-recipe-app
+      - SECRET_KEY=your-production-secret-key-change-this
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend/public:/app/public
+    networks:
+      - food-recipe-network
+
+  # Frontend Service (Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: food-recipe-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - food-recipe-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  food-recipe-network:
+    driver: bridge

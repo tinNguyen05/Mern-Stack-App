@@ -1,9 +1,14 @@
-const express=require("express")
-const router=express.Router()
-const {userLogin,userSignUp,getUser}=require("../controller/user")
+const express = require("express");
+const router = express.Router();
+const { userLogin, userSignUp, getUser } = require("../controller/user");
 
-router.post("/signUp",userSignUp)
-router.post("/login",userLogin)
-router.get("/user/:id",getUser)
+// Đường dẫn sẽ là: /api/user/signUp
+router.post("/signUp", userSignUp);
 
-module.exports=router
+// Đường dẫn sẽ là: /api/user/login
+router.post("/login", userLogin);
+
+// Đường dẫn sẽ là: /api/user/:id
+router.get("/:id", getUser); 
+
+module.exports = router;

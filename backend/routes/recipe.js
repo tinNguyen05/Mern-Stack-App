@@ -1,12 +1,22 @@
-const express=require("express")
-const { getRecipes,getRecipe,addRecipe,editRecipe,deleteRecipe,upload} = require("../controller/recipe")
-const verifyToken = require("../middleware/auth")
-const router=express.Router()
+const express = require("express");
+const router = express.Router();
+const { getRecipes, getRecipe, addRecipe, editRecipe, deleteRecipe, upload } = require("../controller/recipe");
+const verifyToken = require("../middleware/auth");
 
-router.get("/",getRecipes) //Get all recipes
-router.get("/:id",getRecipe) //Get recipe by id
-router.post("/",upload.single('file'),verifyToken ,addRecipe) //add recipe
-router.put("/:id",upload.single('file'),editRecipe) //Edit recipe
-router.delete("/:id",deleteRecipe) //Delete recipe
+// Đường dẫn: /api/recipe/ (Lấy tất cả công thức)
+router.get("/", getRecipes);
 
-module.exports=router
+// Đường dẫn: /api/recipe/:id (Lấy chi tiết 1 công thức)
+router.get("/:id", getRecipe);
+
+// Các route bên dưới cần đăng nhập (verifyToken)
+// Thêm công thức
+router.post("/", upload.single('file'), verifyToken, addRecipe);
+
+// Sửa công thức (Nên thêm verifyToken để chỉ chủ sở hữu mới được sửa)
+router.put("/:id", upload.single('file'), verifyToken, editRecipe);
+
+// Xóa công thức
+router.delete("/:id", verifyToken, deleteRecipe);
+
+module.exports = router;
