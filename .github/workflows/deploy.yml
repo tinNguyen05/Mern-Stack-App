@@ -30,18 +30,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{secrets.HOST_DNS}}
           username: ${{secrets.USERNAME}}
           key: ${{secrets.EC2_SSH_KEY}}
-          scripts: |
+          script: |
+            # Phải nằm thụt lề vào trong script như thế này
             docker pull ${{secrets.DOCKER_USERNAME}}/mern-stack-app:latest
-
             docker stop mern-app-container || true
             docker rm mern-app-container || true
-
-            docker run -dp 4000:4000 --name mern-app-container \
-              -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' \
-              ${{secrets.DOCKER_USERNAME}}/mern-stack-app:latest
+            docker run -dp 4000:4000 --name mern-app-container -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' ${{secrets.DOCKER_USERNAME}}/mern-stack-app:latest
 
