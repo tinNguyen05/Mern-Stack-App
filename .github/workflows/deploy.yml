@@ -27,7 +27,7 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Pull Image from Docker Hub
         run: docker pull ${{secrets.DOCKER_USERNAME}}/mern-stack-app:latest
