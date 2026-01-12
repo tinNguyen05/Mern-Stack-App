@@ -8,10 +8,12 @@ import  AddFoodRecipe  from './pages/AddFoodRecipe'
 import EditRecipe from './pages/EditRecipe'
 import RecipeDetails from './pages/RecipeDetails'
 
+const API_URL = import.meta.env.VITE_API_URL; // Lấy URL từ biến môi trường
+
 
 const getAllRecipes=async()=>{
   let allRecipes=[]
-  await axios.get('http://localhost:4000/api/recipe').then(res=>{
+  await axios.get(`${API_URL}api/recipe`).then(res=>{
     allRecipes=res.data
   })
   return allRecipes
@@ -29,10 +31,10 @@ const getFavRecipes=()=>{
 
 const getRecipe=async({params})=>{
   let recipe;
-  await axios.get(`http://localhost:4000/api/recipe/${params.id}`)
+  await axios.get(`${API_URL}/api/recipe/${params.id}`)
   .then(res=>recipe=res.data)
 
-  await axios.get(`http://localhost:4000/api/user/${recipe.createdBy}`)
+  await axios.get(`${API_URL}/api/user/${recipe.createdBy}`)
   .then(res=>{
     recipe={...recipe,email:res.data.email}
   })

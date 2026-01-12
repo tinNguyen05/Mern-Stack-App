@@ -1,28 +1,25 @@
-FROM node:18-alpine as build
+# Build Stage
+FROM node:20-alpine AS builder
+
+ARG VITE_API_URL
+# Chuyển ARG thành ENV để Vite có thể đọc được trong quá trình build
+ENV VITE_API_URL=$VITE_API_URL
 
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
-
-# Copy source code
 COPY . .
 
-# Build app
 RUN npm run build
 
-# Production stage with Nginx
-FROM nginx:alpine
+# Produciton Stage 
+FROM nginx:alpine3.23
 
-# Copy built files
-COPY --from=build /app/dist /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
 
-# Copy nginx config
-COPY nginx-frontend.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist ./
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
