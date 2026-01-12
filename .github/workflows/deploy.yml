@@ -40,5 +40,5 @@ jobs:
             docker pull ${{secrets.DOCKER_USERNAME}}/mern-stack-app:latest
             docker stop mern-app-container || true
             docker rm mern-app-container || true
-            docker run -dp 4000:4000 --name mern-app-container -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' ${{secrets.DOCKER_USERNAME}}/mern-stack-app:latest
+            docker run -dp 4000:4000 --name mern-app-container -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' -e CONNECTION_STRING="${{secrets.CONNECTION_STRING}}" ${{secrets.DOCKER_USERNAME}}/mern-stack-app:latest
 
